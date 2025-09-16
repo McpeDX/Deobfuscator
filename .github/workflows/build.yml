@@ -19,14 +19,18 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Test
-        run: mvn test
+      - name: Run tests
+        run: mvn -B test --file pom.xml
 
-      - name: Build
-        run: mvn -B package --file pom.xml
+      - name: Build modules
+        run: mvn -B package --file pom.xml -DskipTests
 
-      - name: Upload artifact
+      - name: List all jars (debug)
+        run: find . -name "*.jar"
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
-          path: target/*.jar
+          path: '**/target/*.jar'
+          if-no-files-found: error
